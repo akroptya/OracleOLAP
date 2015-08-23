@@ -1,0 +1,36 @@
+exec cwm2_olap_dimension.drop_dimension ('VR_REPORTS', 'SDACHAOBJ');
+commit;
+exec cwm2_olap_dimension.create_dimension ('VR_REPORTS', 'SDACHAOBJ', 'Сдача', 'Сдача', 'Сдача', 'Сдача');
+commit;
+exec cwm2_olap_dimension_attribute.create_dimension_attribute('VR_REPORTS', 'SDACHAOBJ', 'Nazva', 'Назва', 'Назва', 'Назва');
+commit;
+exec cwm2_olap_hierarchy.create_hierarchy ('VR_REPORTS', 'SDACHAOBJ', 'SDACHAOBJ_ROLLUP', 'Standard', 'Standard', 'Standard','UNSOLVED LEVEL-BASED');
+exec cwm2_olap_dimension.set_default_display_hierarchy('VR_REPORTS', 'SDACHAOBJ', 'SDACHAOBJ_ROLLUP');
+commit;
+exec cwm2_olap_level.create_level('VR_REPORTS', 'SDACHAOBJ', 'DOR_LVL', 'Дорога', 'Дорога', 'Дорога', 'Дорога');
+exec cwm2_olap_level.create_level('VR_REPORTS', 'SDACHAOBJ', 'TYPE_LVL', 'Тип', 'Тип', 'Тип', 'Тип');
+exec cwm2_olap_level.create_level('VR_REPORTS', 'SDACHAOBJ', 'STAN_LVL', 'Станція', 'Станція', 'Станція', 'Станція');
+commit;
+exec cwm2_olap_level_attribute.create_level_attribute('VR_REPORTS', 'SDACHAOBJ', 'Nazva', 'DOR_LVL', 'Nazva','Назва', 'Назва', 'Назва');
+exec cwm2_olap_level_attribute.create_level_attribute('VR_REPORTS', 'SDACHAOBJ', 'Nazva', 'TYPE_LVL', 'Nazva','Назва', 'Назва', 'Назва');
+exec cwm2_olap_level_attribute.create_level_attribute('VR_REPORTS', 'SDACHAOBJ', 'Nazva', 'STAN_LVL', 'Nazva','Назва', 'Назва', 'Назва');
+commit;
+exec cwm2_olap_level.add_level_to_hierarchy('VR_REPORTS', 'SDACHAOBJ', 'SDACHAOBJ_ROLLUP','TYPE_LVL'); 
+exec cwm2_olap_level.add_level_to_hierarchy('VR_REPORTS', 'SDACHAOBJ', 'SDACHAOBJ_ROLLUP','DOR_LVL','TYPE_LVL');
+exec cwm2_olap_level.add_level_to_hierarchy('VR_REPORTS', 'SDACHAOBJ', 'SDACHAOBJ_ROLLUP','STAN_LVL','DOR_LVL');
+commit;
+
+exec cwm2_olap_table_map.MAP_DIMTBL_HIERLEVEL('VR_REPORTS', 'SDACHAOBJ', 'SDACHAOBJ_ROLLUP', 'DOR_LVL', 'VR_REPORTS', 'go4_styky', 'K_DOR');
+exec cwm2_olap_table_map.MAP_DIMTBL_HIERLEVEL('VR_REPORTS', 'SDACHAOBJ', 'SDACHAOBJ_ROLLUP', 'TYPE_LVL', 'VR_REPORTS', 'go4_styky', 'ST_TYPE_N');
+exec cwm2_olap_table_map.MAP_DIMTBL_HIERLEVEL('VR_REPORTS', 'SDACHAOBJ', 'SDACHAOBJ_ROLLUP', 'STAN_LVL', 'VR_REPORTS', 'go4_styky', 'CODE');
+commit;
+exec cwm2_olap_table_map.MAP_DIMTBL_HIERLEVELATTR('VR_REPORTS', 'SDACHAOBJ', 'Nazva', 'SDACHAOBJ_ROLLUP', 'DOR_LVL', 'Nazva', 'VR_REPORTS', 'go4_styky', 'N_DOR'); 
+exec cwm2_olap_table_map.MAP_DIMTBL_HIERLEVELATTR('VR_REPORTS', 'SDACHAOBJ', 'Nazva', 'SDACHAOBJ_ROLLUP', 'TYPE_LVL', 'Nazva', 'VR_REPORTS', 'go4_styky', 'ST_TYPE'); 
+exec cwm2_olap_table_map.MAP_DIMTBL_HIERLEVELATTR('VR_REPORTS', 'SDACHAOBJ', 'Nazva', 'SDACHAOBJ_ROLLUP', 'STAN_LVL', 'Nazva', 'VR_REPORTS', 'go4_styky', 'NAME_S'); 
+commit;
+exec dbms_awm.create_awdimload_spec('SDACHAOBJ_LOAD', 'VR_REPORTS', 'SDACHAOBJ', 'FULL_LOAD');
+exec dbms_awm.add_awdimload_spec_filter('SDACHAOBJ_LOAD', 'VR_REPORTS', 'SDACHAOBJ', 'VR_REPORTS','go4_styky', '' );
+commit;
+exec CWM2_OLAP_VALIDATE.VALIDATE_DIMENSION('VR_REPORTS', 'SDACHAOBJ');
+commit;
+
